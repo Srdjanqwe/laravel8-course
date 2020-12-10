@@ -94,7 +94,7 @@ class PostTest extends TestCase
         $this->assertEquals($messages['content'][0],'The content must be at least 10 characters.');
 
 
-        // dd($message->getMessages());
+        // dd($messages->getMessages());
 
         //Assert
         // $this->assertEquals(session('status'),'Blog post was created!');
