@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,9 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', 'HomeController@home')->name('home');
+Route::get('/', 'HomeController@home')
+    ->name('home')
+    // ->middleware('auth')
+    ;
 Route::get('/contact', 'HomeController@contact')->name('contact');
 // Route::get('/blog-post/{id}/{welcome?}', 'HomeController@blogPost')->name('blog-post');
 Route::resource('/posts', 'PostController');
 
-// Auth::routes();
+Auth::routes();

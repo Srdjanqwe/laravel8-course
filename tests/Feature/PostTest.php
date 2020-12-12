@@ -66,7 +66,8 @@ class PostTest extends TestCase
         ];
 
         // Act 302 redirect
-        $this->post('/posts', $params)
+        $this->actingAs($this->user())
+            ->post('/posts', $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -84,7 +85,8 @@ class PostTest extends TestCase
         ];
 
         // Act 302 redirect
-        $this->post('/posts', $params)
+        $this->actingAs($this->user())
+            ->post('/posts', $params)
             ->assertStatus(302)
             ->assertSessionHas('errors');
 
@@ -115,7 +117,8 @@ class PostTest extends TestCase
         ];
 
 
-        $this->put("/posts/{$post->id}", $params)
+        $this->actingAs($this->user())
+            ->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
 
@@ -130,7 +133,8 @@ class PostTest extends TestCase
         $post = $this->createDummyBlogPost();
         $this->assertDatabaseHas('blogposts', $post->getAttributes());
 
-        $this->delete("/posts/{$post->id}")
+        $this->actingAs($this->user())
+            ->delete("/posts/{$post->id}")
             ->assertStatus(302)
             ->assertSessionHas('status');
 
