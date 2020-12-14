@@ -9,6 +9,7 @@ use Tests\TestCase;
 use App\Models\BlogPost;
 use App\Models\Comment;
 use Carbon\Factory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PostTest extends TestCase
 {
@@ -139,7 +140,8 @@ class PostTest extends TestCase
             ->assertSessionHas('status');
 
         $this->assertEquals(session('status'), 'Blog post was deleted!');
-        $this->assertDatabaseMissing('blogposts',$post->getAttributes());
+        // $this->assertDatabaseMissing('blogposts',$post->getAttributes());
+        $this->assertSoftDeleted('blogposts', $post->getAttributes());
 
     }
 
