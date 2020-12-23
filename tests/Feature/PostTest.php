@@ -106,8 +106,8 @@ class PostTest extends TestCase
 
     public function testUpdateValid()
     {
-
-        $post = $this->createDummyBlogPost();
+        $user = $this->user();
+        $post = $this->createDummyBlogPost($user->id);
 
         // $this->assertDatabaseHas('blogposts', $post->toArray()); izbacuje error zbog created_at
         $this->assertDatabaseHas('blogposts', $post->getAttributes());
@@ -118,7 +118,7 @@ class PostTest extends TestCase
         ];
 
 
-        $this->actingAs($this->user())
+        $this->actingAs($user)
             ->put("/posts/{$post->id}", $params)
             ->assertStatus(302)
             ->assertSessionHas('status');
@@ -131,10 +131,11 @@ class PostTest extends TestCase
 
     public function testDelete()
     {
-        $post = $this->createDummyBlogPost();
+        $user = $this->user();
+        $post = $this->createDummyBlogPost($user->id);
         $this->assertDatabaseHas('blogposts', $post->getAttributes());
 
-        $this->actingAs($this->user())
+        $this->actingAs($user)
             ->delete("/posts/{$post->id}")
             ->assertStatus(302)
             ->assertSessionHas('status');
@@ -145,14 +146,18 @@ class PostTest extends TestCase
 
     }
 
-    private function createDummyBlogPost(): BlogPost
+    private function createDummyBlogPost($userId = null): BlogPost
     {
         // $post = new BlogPost();
         // $post->title ='New title';
         // $post->content ='Content of the blog post';
         // $post->save();
 
-        $post = BlogPost::factory()->newTitle()->create();
+        $post = BlogPost::factory()->newTitle()->create(
+            [
+                'user_id' => $userId ?? $this->user()-> id,
+            ]
+        );
 
         return $post;
     }
