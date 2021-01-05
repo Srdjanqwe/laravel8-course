@@ -1,17 +1,20 @@
 @extends('layout')
 
 @section('content')
-    <h1>{{ $posts->title }}</h1>
+    <h1>{{ $posts->title }}
+        <x-badge show="{{ now()->diffInMinutes($posts->created_at) < 10 }}">
+            Brand new post!
+        </x-badge>
+    </h1>
+
     <p>{{ $posts ->content }}</p>
 
-    {{-- <p>Added {{ $posts->created_at }}</p> --}}
-    <p>Added {{ $posts->created_at->diffForHumans() }}</p>
+    <x-updated date="{{ $posts->created_at->diffForHumans() }}" name="{{ $posts->user->name }}">
+    </x-updated>
 
-    {{-- {{ (new Carbon\Carbon())->diffInMinutes($posts->created_at) }} --}}
-
-    @if ((new Carbon\Carbon())->diffInMinutes($posts->created_at) < 5)
-        <strong>New!</strong>
-    @endif
+    <x-updated date="{{ $posts->updated_at->diffForHumans() }}">
+        Updated
+    </x-updated>
 
     <h4>Comments</h4>
 
@@ -19,9 +22,10 @@
         <p>
             {{ $comment->content }}
         </p>
-        <p class="text-muted">
-            added {{$comment->created_at->diffForHumans() }}
-        </p>
+
+    <x-updated date="{{ $comment->created_at->diffForHumans() }}">
+    </x-updated>
+
     @empty
         <p>No comments yet!</p>
     @endforelse
