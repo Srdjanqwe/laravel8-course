@@ -15,9 +15,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-
-Route::get('/', 'HomeController@home')
-    ->name('home')
+Route::get('/', [HomeController::class,'home'])->name('home');
+// Route::get('/', 'HomeController@home') ->name('home')
     // ->middleware('auth')
     ;
 Route::get('/contact', 'HomeController@contact')->name('contact');

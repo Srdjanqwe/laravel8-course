@@ -15,7 +15,6 @@
         <nav class="my-2 my-md-0 mr-md-3" >
                 <a class="p-2 text-dark" href="{{ route('home')}}">Home</a>
                 <a class="p-2 text-dark" href="{{ route('contact')}}">Contact</a>
-                {{-- <li><a class="p-2 text-dark" href="{{ route('blog-post', ['id'=>1])}}">Blog post</a></li> --}}
                 <a class="p-2 text-dark" href="{{ route('posts.index')}}">Blog post</a>
                 <a class="p-2 text-dark" href="{{ route('posts.create')}}">Add </a>
 
@@ -38,21 +37,9 @@
         </nav>
     </div>
 
-    {{-- <ul> --}}
-
-    {{-- <li><a href="{{ route('home')}}">Home</a></li> --}}
-    {{-- <li><a href="{{ route('contact')}}">Contact</a></li> --}}
-    {{-- <li><a href="{{ route('blog-post', ['id'=>1])}}">Blog post</a></li> --}}
-    {{-- <li><a href="{{ route('posts.index')}}">Blog post</a></li> --}}
-    {{-- <li><a href="{{ route('posts.create')}}">Add Blog Post</a></li> --}}
-
-    {{-- </ul> --}}
-
     <div class="container">
         @if(session()->has('status'))
-            {{-- <p style="color: green">{{ session()->get('status')}}</p> --}}
             <div style="background: green;color:white">{{ session()->get('status')}}</div>
-
         @endif
 
     @yield('content')
