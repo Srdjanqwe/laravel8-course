@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -40,12 +41,25 @@ class PostController extends Controller
 
         // dd(DB::getQueryLog());
 
+        $mostCommented = Cache::tags(['blog-post'])->remember('blog-post-commented', 60, function () {
+            return BlogPost::mostCommented()->take(5)->get();
+        });
+
+        $mostActive = Cache::remember('users-most-active', 60, function () {
+            return User::withMostBlogPosts()->take(5)->get();
+        });
+
+        $mostActiveLastMonth = Cache::remember('users-most-active-last-month', 60, function () {
+            return User::withMostBlogPostsLastMonth()->take(5)->get();
+        });
+
+
         return view(
             'posts.index',
-            ['posts'=>BlogPost::latest()->withCount('comments')->get(),
-            'mostCommented'=> BlogPost::mostCommented()->take(5)->get(),
-            'mostActive' =>User::withMostBlogPosts()->take(5)->get(),
-            'mostActiveLastMonth' =>User::withMostBlogPostsLastMonth()->take(5)->get(),
+            ['posts'=>BlogPost::latest()->withCount('comments')->with('user')->get(),
+            'mostCommented'=> $mostCommented,
+            'mostActive' =>$mostActive,
+            'mostActiveLastMonth' =>$mostActiveLastMonth,
             ]);
     }
 
@@ -57,11 +71,51 @@ class PostController extends Controller
      */
     public function show($id)
     {
+        $blogPost = Cache::tags(['blog-post'])->remember('blog-post-{$id}', 60, function () use($id) {
+            return BlogPost::with('comments')->findOrFail($id);
+        });
+
+        $sessionId = session()->getId();
+        $counterKey="blog-post-{$id}-counter";
+        $usersKey="blog-post-{$id}-users";
+
+        $users = Cache::tags(['blog-post'])->get($usersKey,[]);
+        $usersUpdate = [];
+        $differences = 0;
+        $now = now();
+
+        foreach ($users as $session => $lastVisit) {
+            if ($now->diffInMinutes($lastVisit) >=1) {
+                $differences--;
+            } else {
+                $usersUpdate[$session] = $lastVisit;
+            }
+        }
+
+        if(!array_key_exists($sessionId, $users) || $now->diffInMinutes($users[$sessionId]) >=1) {
+            $differences++;
+        }
+
+        $usersUpdate[$sessionId] = $now;
+        Cache::tags(['blog-post'])->forever($usersKey, $usersUpdate);
+
+        if(!Cache::tags(['blog-post'])->has($counterKey)) {
+            Cache::tags(['blog-post'])->forever($counterKey, 1);
+        } else {
+            Cache::tags(['blog-post'])->increment($counterKey, $differences);
+        }
+
+        $counter =Cache::tags(['blog-post'])->get($counterKey);
+
         // dd(BlogPost::find($id));
         // $request->session()->reflash();
-        return view('posts.show', ['posts'=>BlogPost::with(['comments' => function ($query) {
-            return $query->latest();
-        }])->findOrFail($id)]);
+        return view('posts.show',
+        ['posts' => $blogPost,
+            'counter' => $counter,
+        ]);
+        // ['posts'=>BlogPost::with(['comments' => function ($query) {
+            // return $query->latest();
+        // }])->findOrFail($id)]);
     }
 
     public function create()
@@ -90,7 +144,7 @@ class PostController extends Controller
         //     abort(403, "You can't edit this blog-post");
         // }
 
-        return view('posts.edit', ['posts'=>$post]);
+        return view('posts.edit', ['posts'=> $post]);
     }
     public function update(StorePost $request, $id)
     {

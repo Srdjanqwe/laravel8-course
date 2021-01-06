@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -29,6 +30,8 @@ class DatabaseSeeder extends Seeder
             $this ->command->info('Data base was refreshed');
 
         }
+
+        Cache::tags(['blog-post'])->flush();
 
         $this->call([
             UsersTableSeeder::class,
