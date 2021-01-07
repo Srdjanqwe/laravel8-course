@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\BlogPost;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
 use Illuminate\Support\Facades\Cache;
@@ -56,7 +57,7 @@ class PostController extends Controller
 
         return view(
             'posts.index',
-            ['posts'=>BlogPost::latest()->withCount('comments')->with('user')->get(),
+            ['posts'=>BlogPost::latest()->withCount('comments')->with('user')->with('tags')->get(),
             'mostCommented'=> $mostCommented,
             'mostActive' =>$mostActive,
             'mostActiveLastMonth' =>$mostActiveLastMonth,
@@ -72,7 +73,7 @@ class PostController extends Controller
     public function show($id)
     {
         $blogPost = Cache::tags(['blog-post'])->remember('blog-post-{$id}', 60, function () use($id) {
-            return BlogPost::with('comments')->findOrFail($id);
+            return BlogPost::with('comments')->with('tags')->with('user')->findOrFail($id);
         });
 
         $sessionId = session()->getId();

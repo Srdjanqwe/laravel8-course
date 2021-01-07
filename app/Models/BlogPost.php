@@ -30,6 +30,11 @@ class BlogPost extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany('App\Models\Tag')->withTimestamps();
+    }
+
     // local query scope
     public function scopeLatest(Builder $query)
     {

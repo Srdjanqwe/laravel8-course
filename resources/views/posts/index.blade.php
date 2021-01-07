@@ -19,6 +19,10 @@
                         <x-updated date="{{ $post->updated_at->diffForHumans() }}" name="{{ $post->user->name }}">
                         </x-updated>
 
+                        {{-- <x-tags tags="{{ $post->tags }}"></x-tags> --}}
+                        {{-- <x-tags>{{ $post->tags->name }}</x-tags> --}}
+                        {{-- <x-tags>Proba</x-tags> --}}
+
                         @if($post->comments_count)
                             <p>{{ $post->comments_count}} comments</p>
                         @else
