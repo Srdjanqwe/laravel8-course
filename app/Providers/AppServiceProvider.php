@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use App\Http\ViewComposers\ActivityComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.card', 'card');
         Blade::component('components.tags', 'tags');
         Blade::aliasComponent('components.tags', 'tags'); // ovo na neku foru radi vrlo uspesno @tags @endtags
+
+        // View::composer('posts.index', 'App\Http\ViewComposers\ActivityComposer');
+        view()->composer(['posts.index','posts.show'], ActivityComposer::class); // pazi na ovodjenje klasa
 
     }
 }

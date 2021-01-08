@@ -24,5 +24,6 @@ Route::get('/secret', 'HomeController@secret')->name('secret')->middleware('can:
 
 // Route::get('/blog-post/{id}/{welcome?}', 'HomeController@blogPost')->name('blog-post');
 Route::resource('/posts', 'PostController');
+Route::get('/posts/tag/{tag}', 'PostTagController@index')->name('posts.tags.index');
 
 Auth::routes();
