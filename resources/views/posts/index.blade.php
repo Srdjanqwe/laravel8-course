@@ -20,8 +20,9 @@
                         </x-updated>
 
                         {{-- <x-tags tags="{{ $post->tags }}"></x-tags> --}}
-                        {{-- <x-tags>{{ $post->tags->name }}</x-tags> --}}
+                        {{-- <x-tags>{{ $post->tags }}</x-tags> --}}
                         {{-- <x-tags>Proba</x-tags> --}}
+                        @tags(['tags' => $post->tags])@endtags
 
                         @if($post->comments_count)
                             <p>{{ $post->comments_count}} comments</p>

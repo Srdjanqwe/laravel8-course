@@ -24,10 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         Blade::component('components.badge', 'badge');
         Blade::component('components.updated', 'updated');
         Blade::component('components.card', 'card');
         Blade::component('components.tags', 'tags');
+        Blade::aliasComponent('components.tags', 'tags'); // ovo na neku foru radi vrlo uspesno @tags @endtags
 
     }
 }
