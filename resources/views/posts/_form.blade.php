@@ -13,13 +13,4 @@
     <input id="content" type="text" name="content" class="form-control" value="{{ old('content', $posts->content ?? null) }}"/>
 </div>
 
-@if($errors->any())
-    <div class="mb-3">
-        <ul class="list-group">
-            @foreach($errors->all() as $error)
-                <li class="list-group-item list-group-item-danger">{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-
-@endif
+@errors @enderrors
