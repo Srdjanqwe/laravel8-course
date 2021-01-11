@@ -46,7 +46,7 @@ class PostController extends Controller
         return view(
             'posts.index',
             [
-                'posts'=>BlogPost::latestWithRealtions()->get(),
+                'posts'=>BlogPost::latestWithRelations()->get(),
 
             ]);
     }
