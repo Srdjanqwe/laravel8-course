@@ -7,11 +7,11 @@ use App\Models\BlogPost;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use App\Http\Requests\StorePost;
+use App\Models\Image;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-
-
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -117,8 +117,38 @@ class PostController extends Controller
         // dd($request->all());
         $validatedData = $request->validated();
         $validatedData['user_id'] = $request->user()->id;
-
         $blogPost = BlogPost::create($validatedData);
+
+        // $hasFile = $request->hasFile('thumbnail');
+        // dump($hasFile); // ovo daje true ili false
+
+        // if($hasFile) {
+            // $file = $request->file('thumbnail');
+            // dump($file); // ovo daje info
+            // dump($file->getClientMimeType()); // image/png
+            // dump($file->getClientOriginalExtension()); // png
+
+            // dump($file->store('thumbnails')); // i snimi thumb/ewqeqdasdasd.png
+            // dump(Storage::disk('public')->put('thumbnails', $file)); // i snimi thumb/ewqeqdasdasd.png
+
+            // dump($file->storeAs('thumbnails', $blogPost->id . '.' . $file->guessExtension())); // thumbnails/12.png
+            // dump(Storage::putFileAs('thumbnails', $file, $blogPost->id . '.' . $file->guessExtension())); // sad radi thumbnails/12.png i ovo snima u svoj local disk koji se zove thumb
+
+
+            // $name1 = $file->storeAs('thumbnails', $blogPost->id . '.' . $file->guessExtension());
+            // $name2 = Storage::disk('local')->putFileAs('thumbnails', $file, $blogPost->id . '.' . $file->guessClientExtension()); // za local nece da cita ovo ne znam da koristim ovo proveriti kako koristi
+
+            // dump(Storage::url($name1)); // public ovako radi url
+            // dump(Storage::disk('local')->url($name2)); // url path root
+
+        if ($request->hasFile('thumbnail')) { // ovo u zagradi mora biti razlicito od store-a
+            $path = $request->file('thumbnail')->store('thumbnails'); // i ovde mora biti mora biti razlicit
+            $blogPost->image()->save(
+                Image::create(['path' => $path])
+            );
+        }
+        // die;
+
         $request->session()->flash('status', 'Blog post was created!');
 
         return redirect()->route('posts.show',['post'=> $blogPost->id]);
@@ -148,9 +178,26 @@ class PostController extends Controller
         // $posts->title=$validatedData['title'];
         // $posts->content=$validatedData['content'];
         $post->fill($validatedData);
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails');
+
+            if ($post->image) {
+                Storage::delete($post->image->path);
+                $post->image->path = $path;
+                $post->image->save();
+            } else {
+                $post->image()->save(
+                    Image::create(['path' => $path])
+                );
+            }
+
+        }
+
         $post->save();
         $request->session()->flash('status', 'Blog post was updated!');
         return redirect()->route('posts.show', ['post'=>$post->id]);
+
 
     }
     public function destroy($id)

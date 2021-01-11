@@ -35,6 +35,12 @@ class BlogPost extends Model
         return $this->belongsToMany('App\Models\Tag')->withTimestamps();
     }
 
+    public function image()
+    {
+        return $this->hasOne('App\Models\Image');
+    }
+
+
     // local query scope
     public function scopeLatest(Builder $query)
     {
@@ -65,6 +71,7 @@ class BlogPost extends Model
 
         static::deleting(function (BlogPost $blogPost) {
             $blogPost->comments()->delete();
+            // $blogPost->image()->delete(); // vec je softdelete ne treba
             Cache::tags(['blog-post'])->forget('blog-post-{$blogPost->id}');
         });
 

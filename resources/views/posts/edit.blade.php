@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <form method="POST" action="{{ route('posts.update',['post'=> $posts->id]) }}">
+    <form method="POST" action="{{ route('posts.update',['post'=> $posts->id]) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
