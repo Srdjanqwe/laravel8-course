@@ -16,7 +16,7 @@
                             @endif
                         </h3>
 
-                        <x-updated date="{{ $post->updated_at->diffForHumans() }}" name="{{ $post->user->name }}">
+                        <x-updated date="{{ $post->updated_at->diffForHumans() }}" name="{{ $post->user->name }}" userId="{{ $post->user->id }}">
                         </x-updated>
 
                         {{-- <x-tags tags="{{ $post->tags }}"></x-tags> --}}

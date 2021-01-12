@@ -144,7 +144,7 @@ class PostController extends Controller
         if ($request->hasFile('thumbnail')) { // ovo u zagradi mora biti razlicito od store-a
             $path = $request->file('thumbnail')->store('thumbnails'); // i ovde mora biti mora biti razlicit
             $blogPost->image()->save(
-                Image::create(['path' => $path])
+                Image::make(['path' => $path])
             );
         }
         // die;
@@ -188,7 +188,7 @@ class PostController extends Controller
                 $post->image->save();
             } else {
                 $post->image()->save(
-                    Image::create(['path' => $path])
+                    Image::make(['path' => $path])
                 );
             }
 
