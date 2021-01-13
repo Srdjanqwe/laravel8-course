@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use App\Scopes\LatestScope;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +18,15 @@ class Comment extends Model
 
     protected $fillable = ['user_id','content'];
 
-    public function blogPost()
+    // public function blogPost()
+    // {
+    //     return $this->belongsTo('App\Models\BlogPost');
+    // }
+    // ne treba vise zbog comentable
+
+    public function commentable()
     {
-        return $this->belongsTo('App\Models\BlogPost');
+        return $this->morphTo();
     }
 
     public function user()
@@ -38,8 +45,11 @@ class Comment extends Model
         parent::boot();
 
         static::creating(function(Comment $comment) {
-            Cache::tags(['blog-post'])->forget('blog-post-{$comment->blog_post_id}');
+            if($comment->commentable_type === BlogPost::class) {
+            Cache::tags(['blog-post'])->forget('blog-post-{$comment->commentable_id}');
             Cache::tags(['blog-post'])->forget('mostCommented');
+            }
+
         });
 
 

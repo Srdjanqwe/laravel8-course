@@ -21,7 +21,7 @@ class BlogPost extends Model
 
     public function comments()
     {
-        return $this->hasMany('App\Models\Comment');
+        return $this->morphMany('App\Models\Comment', 'commentable')->latest();
         // moze ovde ->latest() bez da ga ubacujem u PostController
     }
 

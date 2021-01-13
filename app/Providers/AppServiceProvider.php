@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.tags', 'tags');
         Blade::aliasComponent('components.tags', 'tags'); // ovo na neku foru radi vrlo uspesno @tags @endtags
         Blade::aliasComponent('components.errors', 'errors');
+        Blade::aliasComponent('components.comment-form', 'commentForm');
+        Blade::aliasComponent('components.comment-list', 'commentList');
+
+
 
         // View::composer('posts.index', 'App\Http\ViewComposers\ActivityComposer');
         view()->composer(['posts.index','posts.show'], ActivityComposer::class); // pazi na ovodjenje klasa
