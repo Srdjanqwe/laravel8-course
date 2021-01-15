@@ -3,10 +3,14 @@
 namespace App\Providers;
 
 
+use App\Models\Comment;
+use App\Models\BlogPost;
+use App\Observers\CommentObserver;
+use App\Observers\BlogPostObserver;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Http\ViewComposers\ActivityComposer;
-use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,10 +41,12 @@ class AppServiceProvider extends ServiceProvider
         Blade::aliasComponent('components.comment-form', 'commentForm');
         Blade::aliasComponent('components.comment-list', 'commentList');
 
-
-
         // View::composer('posts.index', 'App\Http\ViewComposers\ActivityComposer');
         view()->composer(['posts.index','posts.show'], ActivityComposer::class); // pazi na ovodjenje klasa
+
+        BlogPost::observe(BlogPostObserver::class);
+        Comment::observe(CommentObserver::class);
+
 
     }
 }

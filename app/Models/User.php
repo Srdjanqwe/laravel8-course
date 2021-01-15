@@ -88,4 +88,9 @@ class User extends Authenticatable
         });
     }
 
+    public function scopeThatIsAdmin(Builder $query)
+    {
+        return $query->where('is_admin', true);
+    }
+
 }

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\BlogPost;
 use App\Models\Tag;
-use Illuminate\Http\Request;
-use App\Http\Requests\StorePost;
+use App\Models\User;
 use App\Models\Image;
-use Illuminate\Support\Facades\Cache;
+use App\Models\BlogPost;
+use Illuminate\Http\Request;
+use App\Events\BlogPostPosted;
+use App\Http\Requests\StorePost;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -148,6 +149,8 @@ class PostController extends Controller
             );
         }
         // die;
+
+        event(new BlogPostPosted($blogPost));
 
         $request->session()->flash('status', 'Blog post was created!');
 

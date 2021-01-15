@@ -39,20 +39,4 @@ class Comment extends Model
     {
         return $query->orderBy(static::CREATED_AT,'desc');
     }
-
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function(Comment $comment) {
-            if($comment->commentable_type === BlogPost::class) {
-            Cache::tags(['blog-post'])->forget('blog-post-{$comment->commentable_id}');
-            Cache::tags(['blog-post'])->forget('mostCommented');
-            }
-
-        });
-
-
-    }
 }
