@@ -20,6 +20,7 @@ class PostController extends Controller
     {
         $this->middleware('auth')
              ->only(['create','store','update','destroy']);
+        // $this->middleware('locale'); // global je u Kernelu
     }
     /**
      * Display a listing of the resource.

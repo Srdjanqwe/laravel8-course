@@ -37,7 +37,8 @@
         {{-- <x-tags>{{ $post->tags }}</x-tags> --}}
         @tags(['tags' => $posts->tags])@endtags  {{-- sa aliasComponent radi --}}
 
-        <p>Currently read by {{ $counter }} people</p>
+        {{-- <p>Currently read by {{ $counter }} people</p> --}}
+        <p>{{ trans_choice('messages.people.reading', $counter) }}</p>
 
         <h4>Comments</h4>
 

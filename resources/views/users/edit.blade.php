@@ -22,6 +22,15 @@
                     <input type="text" value="" class="form-control" name="name">
                 </div>
 
+                <div class="form-group">
+                    <label>{{ __('Language:')}}</label>
+                    <select class="form-control" name="locale">
+                        @foreach(App\Models\User::Locales as $locale => $label)
+                            <option value="{{ $locale }}" {{ $user->locale !== $locale ?: 'selected' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 @errors @enderrors
 
                 <div class="form-group">
